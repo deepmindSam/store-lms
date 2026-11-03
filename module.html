@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="noindex" />
+  <title>Lesson · Store Training</title>
+  <link rel="stylesheet" href="/src/style.css" />
+</head>
+<body>
+  <div class="topbar">
+    <div class="brand"><a href="/dashboard.html">Store Training</a></div>
+    <div class="right">
+      <a href="#" id="signout">Sign out</a>
+    </div>
+  </div>
+
+  <div class="page">
+    <a href="/dashboard.html">&larr; Back to dashboard</a>
+    <div class="card" style="margin-top: 14px;">
+      <h1 id="module-title">Loading...</h1>
+      <p class="muted small" id="module-meta"></p>
+    </div>
+
+    <div class="card lesson-content" id="lesson-body">Loading lesson...</div>
+
+    <div class="card">
+      <h2>Ready to continue?</h2>
+      <p class="muted">Once you've read through the lesson, take the quiz. You need to score at least the pass mark shown above to complete this module.</p>
+      <a class="btn" id="quiz-link" href="#">Take the quiz</a>
+    </div>
+  </div>
+
+  <script type="module" src="/src/pages/module.js"></script>
+</body>
+</html>

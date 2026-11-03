@@ -1,0 +1,18 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Store Training</title>
+</head>
+<body>
+  <p>Loading...</p>
+  <script type="module">
+    import { supabase } from "/src/supabaseClient.js";
+    const base = import.meta.env.BASE_URL || "/";
+    supabase.auth.getSession().then(({ data }) => {
+      window.location.href = base.replace(/\/$/, "") + (data?.session ? "/dashboard.html" : "/login.html");
+    });
+  </script>
+</body>
+</html>

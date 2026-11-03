@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="noindex" />
+  <title>Admin · Store Training</title>
+  <link rel="stylesheet" href="/src/style.css" />
+</head>
+<body>
+  <div class="topbar">
+    <div class="brand"><a href="/dashboard.html">Store Training</a></div>
+    <div class="right">
+      <a href="#" id="signout">Sign out</a>
+    </div>
+  </div>
+
+  <div class="page" style="max-width: 1180px;">
+    <h1>Admin dashboard</h1>
+    <p class="muted" id="summary">Loading...</p>
+
+    <div class="card">
+      <div style="display:flex; gap:16px; flex-wrap: wrap; margin-bottom: 4px;">
+        <div class="field" style="min-width:200px;">
+          <label for="filter-store">Store</label>
+          <select id="filter-store"><option value="">All stores</option></select>
+        </div>
+        <div class="field" style="min-width:200px;">
+          <label for="filter-course">Course</label>
+          <select id="filter-course"><option value="">All courses</option></select>
+        </div>
+        <div class="field" style="min-width:200px;">
+          <label for="filter-status">Status</label>
+          <select id="filter-status">
+            <option value="">Any status</option>
+            <option value="not_started">Not started</option>
+            <option value="in_progress">In progress</option>
+            <option value="completed">Completed</option>
+          </select>
+        </div>
+      </div>
+      <div style="overflow-x:auto;">
+        <table id="progress-table">
+          <thead>
+            <tr>
+              <th>Learner</th><th>Store</th><th>Course</th><th>Module</th>
+              <th>Status</th><th>Time spent</th><th>Attempts</th><th>Best score</th><th>Completed</th>
+            </tr>
+          </thead>
+          <tbody id="progress-rows"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <script type="module" src="/src/pages/admin.js"></script>
+</body>
+</html>

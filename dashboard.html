@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="noindex" />
+  <title>My Training · Store Training</title>
+  <link rel="stylesheet" href="/src/style.css" />
+</head>
+<body>
+  <div class="topbar">
+    <div class="brand">Store Training</div>
+    <div class="right">
+      <span id="who"></span>
+      <a id="admin-link" href="/admin.html" hidden>Admin dashboard</a>
+      <a href="#" id="signout">Sign out</a>
+    </div>
+  </div>
+
+  <div class="page">
+    <h1>Your training</h1>
+    <p class="muted" id="overall-summary">Loading...</p>
+
+    <div id="courses"></div>
+  </div>
+
+  <script type="module" src="/src/pages/dashboard.js"></script>
+</body>
+</html>

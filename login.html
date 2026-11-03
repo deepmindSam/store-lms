@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="noindex" />
+  <title>Sign in · Store Training</title>
+  <link rel="stylesheet" href="/src/style.css" />
+</head>
+<body>
+  <div class="page" style="max-width: 420px; padding-top: 10vh;">
+    <div class="card">
+      <h1>Store Training</h1>
+      <p class="muted">Sign in with the email and password your manager gave you.</p>
+      <form id="login-form">
+        <div class="field">
+          <label for="email">Email</label>
+          <input id="email" type="email" required autocomplete="username" />
+        </div>
+        <div class="field">
+          <label for="password">Password</label>
+          <input id="password" type="password" required autocomplete="current-password" />
+        </div>
+        <button class="btn" type="submit" id="submit-btn">Sign in</button>
+        <div id="error" class="error" hidden></div>
+      </form>
+    </div>
+    <p class="muted small">Don't have an account yet? Ask your manager or training admin to create one for you.</p>
+  </div>
+  <script type="module" src="/src/pages/login.js"></script>
+</body>
+</html>

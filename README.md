@@ -1,6 +1,8 @@
 # Store Training LMS
 
-A free, password-protected learning management system for store staff: lessons in Markdown, quizzes with a configurable pass mark, per-learner progress and time-on-task tracking, an upskilling tier that unlocks once core training is complete, and an admin dashboard showing everyone's progress across stores.
+A learning management system for store staff: lessons in Markdown, quizzes with a configurable pass mark, per-learner progress and time-on-task tracking, an upskilling tier that unlocks once core training is complete, and an admin dashboard showing everyone's progress across stores.
+
+**Access boundary:** GitHub Pages and this public repository expose the site files and lesson Markdown to anyone with the URL. Supabase login and Row Level Security protect learner records and quiz results. Do not put confidential policies, personal data, or quiz answers in this repository or `public/`. If the lesson text itself must be confidential, move it to a private, authenticated content store before launch.
 
 **Stack:** static site (Vite, plain JS) deployed free via **GitHub Pages**, with **Supabase** (free tier) providing real per-user login and a Postgres database for progress/quiz data. There is no server to run or pay for.
 
@@ -13,12 +15,13 @@ A free, password-protected learning management system for store staff: lessons i
 
    These are safe to expose in client-side code — they are *meant* to be public. Real access control comes from Row Level Security (RLS) in the database, which is already set up for you below (not from hiding this key).
 
-3. Go to **SQL Editor → New query**, and run these three files from this repo **in order**, pasting each one's contents and clicking Run:
+3. Go to **SQL Editor → New query**, and run these two files from this repo **in order**, pasting each one's contents and clicking Run:
    1. `supabase/schema.sql` — tables, security rules, and the server-side grading function
    2. `supabase/seed_courses.sql` — the curriculum structure (courses + modules)
-   3. `supabase/seed_quiz_questions.sql` — quiz questions **and answers** (this file never leaves your Supabase project — see "Why quizzes are graded server-side" below)
 
-4. Go to **Authentication → Providers** and make sure **Email** is enabled. Go to **Authentication → Settings** and turn **off** "Allow new users to sign up" (or similar wording in your Supabase version) — this app has no public sign-up page; you create learner accounts yourself (see step 3 below), which is what makes it "password protected" rather than open to anyone who finds the URL.
+4. Create a **new, private** quiz question bank and enter it through the Supabase SQL editor. The original quiz seed file was mistakenly committed to this public repository and its answers remain visible in Git history. Do not use those questions as an assessment. Keep the replacement SQL outside this repository and review it against your actual policies. Each row needs `module_slug`, `question`, `options` (JSON array), `correct_index` (zero-based), and `sort_order`. Every module needs at least one question before learners can complete it.
+
+5. Go to **Authentication → Providers** and make sure **Email** is enabled. Go to **Authentication → Settings** and turn **off** "Allow new users to sign up" (or similar wording in your Supabase version) — this app has no public sign-up page; you create learner accounts yourself (see step 3 below), which protects learner data and course interaction. GitHub Pages files remain public.
 
 ## 2. Create your own admin account
 
@@ -86,15 +89,15 @@ Two modules are intentionally written as **templates for you to customize** rath
 
 ### Adding or editing a quiz
 
-Quiz questions (and answers) live only in the database, not in a file this app serves publicly — see the security note below. To add/change a quiz, edit `supabase/seed_quiz_questions.sql` and re-run it in the SQL editor (it deletes and re-inserts the modules you list at the top of the file, so it's safe to re-run after edits).
+Quiz questions and answers belong in a **private** SQL file outside this public repository. Run it in the Supabase SQL editor. When replacing a module's quiz, delete that module's old `quiz_questions` rows first, then insert the revised rows. Review any completed attempts after a substantial policy change and decide whether learners need reassessment.
 
 ## Why quizzes are graded on the server, not in the browser
 
 An earlier, simpler design shipped quiz answers as a static JSON file alongside the lesson, graded in the browser. That's the obvious approach for a static site — and it's broken for a compliance tool: anyone can open their browser's network tab (or just fetch the file directly) and read the correct answers before answering, and nothing stops them from writing a fake "passed" record straight to the database via the browser console, since GitHub Pages has no server to stop them.
 
-This app closes both holes:
+The schema closes those direct database holes **once you use a fresh, private question bank**:
 - Quiz **questions** (without answers) are fetched from a database view (`quiz_questions_public`) that simply doesn't contain the `correct_index` column.
-- **Grading** happens inside a Postgres function (`grade_quiz`, see `supabase/schema.sql`) that runs with elevated privileges, compares answers against the real `quiz_questions` table (which the browser can never read directly), and is the *only* thing allowed to write a quiz attempt or mark a module `completed`.
+- **Grading** happens inside a Postgres function (`grade_quiz`, see `supabase/schema.sql`) that runs with elevated privileges, compares answers against the real `quiz_questions` table (which the browser can never read directly), and is the only client-callable path that writes a quiz attempt or marks a module `completed`.
 - There is no database policy allowing a learner's browser to insert into `progress` or `quiz_attempts` directly — every write goes through `grade_quiz()` or `track_module_time()`.
 
 **Time spent, however, is a soft metric, not a hard gate.** It's self-reported by the browser (time the lesson page was visibly open) and could be inflated by someone leaving a tab open — there's no way to fully verify "active attention" from a static site without invasive tracking, which wasn't the goal here. Treat time-on-task as a useful signal for coaching conversations, not as proof of comprehension — that's what the pass mark is for.

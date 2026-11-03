@@ -1,5 +1,5 @@
 import { marked } from "marked";
-import { requireAuth, signOut, goTo } from "../auth.js";
+import { requireAuth, signOut, goTo, pageUrl } from "../auth.js";
 import { fetchCurriculum, TimeTracker } from "../progress.js";
 import { escapeHtml } from "../util.js";
 
@@ -26,10 +26,9 @@ if (!mod) {
   document.getElementById("module-title").textContent = mod.title;
   document.getElementById("module-meta").textContent =
     `${course.title} · Pass mark: ${mod.pass_mark_percent}%`;
-  document.getElementById("quiz-link").href = `/quiz.html?m=${encodeURIComponent(slug)}`;
+  document.getElementById("quiz-link").href = pageUrl(`quiz.html?m=${encodeURIComponent(slug)}`);
 
-  const base = import.meta.env.BASE_URL || "/";
-  const lessonUrl = `${base.replace(/\/$/, "")}/content/${slug}/lesson.md`;
+  const lessonUrl = pageUrl(`content/${slug}/lesson.md`);
 
   try {
     const res = await fetch(lessonUrl);

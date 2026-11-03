@@ -1,4 +1,4 @@
-import { requireAuth, signOut, goTo } from "../auth.js";
+import { requireAuth, signOut, goTo, pageUrl } from "../auth.js";
 import { fetchCurriculum, fetchQuizQuestions, submitQuizAnswers } from "../progress.js";
 import { escapeHtml } from "../util.js";
 
@@ -25,7 +25,7 @@ if (!mod) {
 } else {
   document.getElementById("quiz-title").textContent = `Quiz: ${mod.title}`;
   document.getElementById("quiz-meta").textContent = `Pass mark: ${mod.pass_mark_percent}%`;
-  document.getElementById("back-link").href = `/module.html?m=${encodeURIComponent(slug)}`;
+  document.getElementById("back-link").href = pageUrl(`module.html?m=${encodeURIComponent(slug)}`);
 
   const startedAt = Date.now();
 
@@ -35,7 +35,7 @@ if (!mod) {
     renderQuiz(questions, startedAt);
   } catch (err) {
     form.innerHTML = `<p class="error">Could not load quiz (${escapeHtml(String(err.message))}). ` +
-      `Check that quiz_questions has rows for module_slug = '${escapeHtml(slug)}' (see supabase/seed_quiz_questions.sql).</p>`;
+      `Ask your training admin to add private quiz questions for this module.</p>`;
   }
 }
 
@@ -93,9 +93,9 @@ function renderQuiz(questions, startedAt) {
       <p>You scored <strong>${scorePercent}%</strong> (needed ${mod.pass_mark_percent}%). Correct: ${correct} / ${total}.</p>
       ${
         passed
-          ? `<a class="btn" href="/dashboard.html">Back to dashboard</a>`
+          ? `<a class="btn" href="${pageUrl("dashboard.html")}">Back to dashboard</a>`
           : `<button class="btn" id="retry-btn">Try again</button>
-             <a class="btn secondary" href="/module.html?m=${encodeURIComponent(slug)}">Review the lesson</a>`
+             <a class="btn secondary" href="${pageUrl(`module.html?m=${encodeURIComponent(slug)}`)}">Review the lesson</a>`
       }
     `;
 

@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.45.4",
+    "dompurify": "^3.4.17",
     "marked": "^13.0.3"
   },
   "devDependencies": {

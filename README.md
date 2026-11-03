@@ -23,6 +23,8 @@ A learning management system for store staff: lessons in Markdown, quizzes with 
 
 5. Go to **Authentication → Providers** and make sure **Email** is enabled. Go to **Authentication → Settings** and turn **off** "Allow new users to sign up" (or similar wording in your Supabase version) — this app has no public sign-up page; you create learner accounts yourself (see step 3 below), which protects learner data and course interaction. GitHub Pages files remain public.
 
+When creating the project, keep **Enable Data API** on, turn **Automatically expose new tables** off, and turn **Enable automatic RLS** on. `schema.sql` explicitly grants the app its required reads and enables RLS on its tables.
+
 ## 2. Create your own admin account
 
 1. In Supabase, go to **Authentication → Users → Add user**, and create a user with your own email and a password. (Or "send invite" if you've configured email sending — the free default email service is rate-limited but fine for a handful of invites.)

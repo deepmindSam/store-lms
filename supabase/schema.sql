@@ -275,6 +275,12 @@ alter table quiz_questions enable row level security;
 -- table (which would include correct_index) are denied outright. The app
 -- reads quiz_questions_public instead (see above).
 
+-- The project can keep "Automatically expose new tables" disabled. Give the
+-- browser only the table reads used by the LMS; RLS below narrows each read.
+grant usage on schema public to authenticated;
+grant select on stores, profiles, courses, modules, progress, quiz_attempts to authenticated;
+revoke all on quiz_questions from anon, authenticated;
+
 -- stores: any signed-in user can read; only admins can write
 drop policy if exists "stores_select" on stores;
 create policy "stores_select" on stores for select using (auth.role() = 'authenticated');

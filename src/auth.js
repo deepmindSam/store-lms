@@ -1,14 +1,9 @@
 import { supabase } from "./supabaseClient.js";
 
-const path = (p) => {
-  // Respects Vite's base so this works both at the repo root in dev
-  // and under /<repo-name>/ on GitHub Pages.
-  const base = import.meta.env.BASE_URL || "/";
-  return base.replace(/\/$/, "") + "/" + p;
-};
+export const pageUrl = (p) => new URL(p, document.baseURI).href;
 
 export function goTo(page) {
-  window.location.href = path(page);
+  window.location.href = pageUrl(page);
 }
 
 /** Redirects to login.html if not signed in. Returns {session, profile}. */

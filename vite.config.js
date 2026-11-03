@@ -7,12 +7,12 @@ export default defineConfig({
     target: "es2022",
     rollupOptions: {
       input: {
-        main: resolve(__dirname, "index.html"),
-        login: resolve(__dirname, "login.html"),
-        dashboard: resolve(__dirname, "dashboard.html"),
-        module: resolve(__dirname, "module.html"),
-        quiz: resolve(__dirname, "quiz.html"),
-        admin: resolve(__dirname, "admin.html")
+        main: resolve(import.meta.dirname, "index.html"),
+        login: resolve(import.meta.dirname, "login.html"),
+        dashboard: resolve(import.meta.dirname, "dashboard.html"),
+        module: resolve(import.meta.dirname, "module.html"),
+        quiz: resolve(import.meta.dirname, "quiz.html"),
+        admin: resolve(import.meta.dirname, "admin.html")
       }
     }
   }

@@ -76,6 +76,7 @@ create or replace view quiz_questions_public as
   order by module_slug, sort_order;
 
 grant select on quiz_questions_public to authenticated;
+revoke all on quiz_questions_public from anon, public;
 
 -- ---------------------------------------------------------------------------
 -- Auto-create a profile row whenever a new auth user is created.
@@ -131,6 +132,12 @@ security definer
 set search_path = public
 as $$
 begin
+  if auth.uid() is null then
+    raise exception 'Sign in required';
+  end if;
+  if p_seconds < 0 or p_seconds > 300 then
+    raise exception 'Invalid time increment';
+  end if;
   insert into progress (user_id, module_slug, status, time_spent_seconds, started_at)
   values (auth.uid(), p_module_slug, 'in_progress', greatest(p_seconds, 0), now())
   on conflict (user_id, module_slug) do update
@@ -146,6 +153,9 @@ security definer
 set search_path = public
 as $$
 begin
+  if auth.uid() is null then
+    raise exception 'Sign in required';
+  end if;
   insert into progress (user_id, module_slug, status, started_at, completed_at)
   values (auth.uid(), p_module_slug, 'completed', now(), now())
   on conflict (user_id, module_slug) do update
@@ -177,9 +187,30 @@ declare
   v_correct int := 0;
   i int;
 begin
+  if auth.uid() is null then
+    raise exception 'Sign in required';
+  end if;
   select pass_mark_percent into v_pass_mark from modules where slug = p_module_slug;
   if v_pass_mark is null then
     raise exception 'Unknown module %', p_module_slug;
+  end if;
+
+  if exists (
+    select 1 from modules m
+    join courses c on c.slug = m.course_slug
+    where m.slug = p_module_slug and c.tier = 'upskilling'
+  ) and exists (
+    select 1 from modules m
+    join courses c on c.slug = m.course_slug
+    where c.tier = 'core'
+      and not exists (
+        select 1 from progress p
+        where p.user_id = auth.uid()
+          and p.module_slug = m.slug
+          and p.status = 'completed'
+      )
+  ) then
+    raise exception 'Complete core training before taking this quiz';
   end if;
 
   select array_agg(correct_index order by sort_order) into v_correct_answers
@@ -216,6 +247,12 @@ begin
 end;
 $$;
 
+revoke execute on function public.handle_new_user() from public, anon, authenticated;
+revoke execute on function public.track_module_time(text, int) from public, anon, authenticated;
+revoke execute on function public.mark_module_complete(text) from public, anon, authenticated;
+revoke execute on function public.grade_quiz(text, int[], int) from public, anon, authenticated;
+revoke execute on function public.is_admin() from public, anon, authenticated;
+
 grant execute on function public.track_module_time(text, int) to authenticated;
 grant execute on function public.grade_quiz(text, int[], int) to authenticated;
 grant execute on function public.is_admin() to authenticated;
@@ -238,19 +275,27 @@ alter table quiz_questions enable row level security;
 -- table (which would include correct_index) are denied outright. The app
 -- reads quiz_questions_public instead (see above).
 
+-- The project can keep "Automatically expose new tables" disabled. Give the
+-- browser only the table reads used by the LMS; RLS below narrows each read.
+grant usage on schema public to authenticated;
+grant select on stores, profiles, courses, modules, progress, quiz_attempts to authenticated;
+revoke all on quiz_questions from anon, authenticated;
+
 -- stores: any signed-in user can read; only admins can write
 drop policy if exists "stores_select" on stores;
 create policy "stores_select" on stores for select using (auth.role() = 'authenticated');
 drop policy if exists "stores_write" on stores;
 create policy "stores_write" on stores for all using (public.is_admin()) with check (public.is_admin());
 
--- profiles: a learner can see/update their own profile; admins can see/update all
+-- profiles: learners can read their own profile; only admins can change profiles.
+-- Never let a learner update role or store_slug through the Data API.
 drop policy if exists "profiles_select_own" on profiles;
 create policy "profiles_select_own" on profiles for select using (id = auth.uid() or public.is_admin());
 drop policy if exists "profiles_update_own" on profiles;
-create policy "profiles_update_own" on profiles for update using (id = auth.uid() or public.is_admin());
+drop policy if exists "profiles_update_admin" on profiles;
+create policy "profiles_update_admin" on profiles for update using (public.is_admin()) with check (public.is_admin());
 drop policy if exists "profiles_admin_insert" on profiles;
-create policy "profiles_admin_insert" on profiles for insert with check (public.is_admin() or id = auth.uid());
+create policy "profiles_admin_insert" on profiles for insert with check (public.is_admin());
 
 -- courses / modules: readable by any signed-in learner; writable by admins only
 drop policy if exists "courses_select" on courses;

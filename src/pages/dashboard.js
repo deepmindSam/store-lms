@@ -1,4 +1,4 @@
-import { requireAuth, signOut } from "../auth.js";
+import { requireAuth, signOut, pageUrl } from "../auth.js";
 import { fetchCurriculum, fetchProgressMap, isUpskillingUnlocked, coreModules } from "../progress.js";
 import { escapeHtml, formatDuration, statusLabel } from "../util.js";
 
@@ -32,7 +32,7 @@ container.innerHTML = curriculum
         const timeSpent = row ? formatDuration(row.time_spent_seconds) : "0s";
         const link = locked
           ? `<span class="muted small">Complete core training first</span>`
-          : `<a href="/module.html?m=${encodeURIComponent(m.slug)}">${status === "completed" ? "Review" : "Start"} →</a>`;
+          : `<a href="${pageUrl(`module.html?m=${encodeURIComponent(m.slug)}`)}">${status === "completed" ? "Review" : "Start"} →</a>`;
         return `
           <div class="module-row">
             <div class="meta">

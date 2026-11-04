@@ -19,9 +19,14 @@ Never commit, quote, or paste in GitHub issues/PRs/logs: real client/store rules
 GitHub Pages may serve public code; private policy and assessment media must be retrieved through server-enforced authentication/authorization. Visual hiding is not security.
 
 ## Maker and checker
-- **Maker (Claude Code preferred):** designs and implements on a separate feature branch; provides tests, migration/rollback plans, evidence, and a draft pull request.
-- **Checker (independent Codex session preferred):** did not author the change; independently inspects the exact PR commit, tests negative cases, reads source authorities available to it, and publishes PASS / FAIL / UNVERIFIED findings. Checker does not edit the maker branch or close its own findings.
-- **Policy approver / publisher (authorized human):** approves content accuracy, authorization decisions, live Supabase migration, and production release. Agent PASS never substitutes for human sign-off.
+**Provenance matters more than model brand.** The founder confirms **Codex authored the original LMS**. Codex therefore is **not** the independent checker of the initial system. The founder wants **Claude to independently review the Codex-built baseline first, then Claude to act as Maker for future improvements.**
+
+- **Phase A — baseline review: Claude independent reviewer.** Review existing `main`, deployment, Supabase design, and this governance PR #4; do not edit baseline code or review your own additions. Report findings; do not merge or publish. Use `docs/agents/CLAUDE_BASELINE_REVIEW_PROMPT.md`.
+- **Phase B — future Maker: Claude Code in a fresh implementation session.** Address confirmed gaps on a separate feature branch with tests, migration/rollback plans, evidence, and a draft PR. Use `docs/agents/CLAUDE_MAKER_PROMPT.md`.
+- **Phase C — independent review of Claude-made changes:** a reviewer who did not design, write, or edit that change (an independent human or clean, separate reviewer session/actor with no maker contributions). Do **not** treat the same Claude maker session as the checker. If using Claude for this as well, it must be an independent review session, ideally with distinct GitHub review identity and independently rerun evidence. The original Codex agent is not assigned the checker role by default.
+- **Policy approver / publisher (authorized human):** approves content accuracy, authorization decisions, live Supabase migration, and production release. An agent report never substitutes for human sign-off.
+
+GitHub may reject formal approval by the PR author's account. In that case, attach a non-approval review report and obtain an independent human GitHub approval for protected merges, if required. Do not claim a review by another session under the same GitHub identity constitutes enforced branch protection.
 
 Never merge or deploy just because build succeeds. Do not alter live authentication, production records, database schemas, published lessons, or access grants without authorized approval and a rollback plan. Preserve existing learner history.
 
@@ -43,4 +48,4 @@ Never merge or deploy just because build succeeds. Do not alter live authenticat
 - Distinct maker, checker, and publisher actors must be enforced server-side; no self-approval.
 - All unsupported live/staging checks are marked **UNVERIFIED**, not PASS.
 
-Start with `docs/agents/CLAUDE_MAKER_PROMPT.md` or `docs/agents/CODEX_CHECKER_PROMPT.md` as appropriate.
+Start with `docs/agents/CLAUDE_BASELINE_REVIEW_PROMPT.md` for Phase A; only after founder disposition of its findings use `docs/agents/CLAUDE_MAKER_PROMPT.md` for Phase B.

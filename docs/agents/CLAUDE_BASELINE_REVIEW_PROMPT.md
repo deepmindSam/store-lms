@@ -1,6 +1,6 @@
-# Copy to Claude — Independent baseline review of Codex-built LMS
+# Archive of original baseline-review instructions — provenance corrected
 
-**ROLE: CHECKER, NOT MAKER.** You did not create the initial LMS. The founder confirms Codex created it. Your job is to independently review the **Codex-authored baseline** in `deepmindSam/store-lms` and the proposed governance draft PR #4, without making changes. You are not approving future code that you yourself will write in a later Maker session.
+**Historical prompt / corrected provenance:** the initial LMS was previously attributed to Codex by recollection, but GitHub initial commit `e2ca6ec7b20f730fab882f9fb5a2472242ea414c` is attributed to Claude and references a Claude Code session. The original reviewer was a separate Claude session. Its R1 findings have been supplied by the founder as a summary and the live Supabase/authentication layer remains unverified. Do not interpret this document as proof of reviewer independence or exclusive model authorship.
 
 ## Start here
 - Repo: https://github.com/deepmindSam/store-lms
@@ -26,7 +26,7 @@ Create your independent report as **local/uncommitted Markdown** or a sanitized 
 `CLAUDE_BASELINE_CHECK_R1.md`.
 
 Include:
-- Provenance: initial implementation attributed to Codex by founder; current checker is Claude.
+- Provenance: initial Git commit attributed to Claude; historical Codex-only recollection disputed; current reviewer is a separate Claude session, without known changes in this review.
 - Exact main SHA and governance PR SHA, environment and scope.
 - Summary of claims checked and evidence links.
 - Full requirement matrix with pass/fail/unverified, setup/expected/actual, and reproducible steps.
@@ -36,6 +36,6 @@ Include:
 - Explicit declaration that this review **does not cover future Claude-authored changes**.
 
 ## Independence for subsequent work
-After this report, the founder may assign a **new Claude Code session as Maker** to fix/build the LMS. That Maker must open a separate PR. That new PR requires a reviewer who did **not** author or edit those changes: an independent human or a separately instructed, clean Claude reviewer session, with a distinct GitHub approver if formal independent approval is needed. Do not reuse the Maker session to review its own code. Codex is **not** the designated baseline checker.
+After this report, the founder may assign a **new Claude Code session as Maker** to fix/build the LMS. That Maker must open a separate PR. That new PR requires a reviewer who did **not** author or edit those changes: an independent human or a separately instructed, clean Claude reviewer session, with a distinct GitHub approver if formal independent approval is needed. Do not reuse the Maker session to review its own code. The original contribution provenance is mixed or unresolved; independent checker eligibility is determined by actual contributions to the change, not an agent name.
 
 **Stop after reporting. Do not implement the repairs in this checker session.**

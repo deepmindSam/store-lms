@@ -6,10 +6,10 @@ Status: proposed governance design for independent review. No authorization to p
 The present code offers authentication, a private `lesson_content` table, server-side quiz grading, and learner progress. A one-bit `is_published` flag is **not** a maker/checker workflow. The goal is to prevent unchecked content and unverified functionality from becoming operationally authoritative.
 
 ## Provenance and assignment of agents
-- **Original application:** built initially by Codex, per founder handover. Codex must not independently certify its own baseline.
-- **Initial independent baseline checker:** Claude in a review-only session, including independent review of this governance draft PR.
-- **Subsequent implementation maker:** Claude Code, in a separate implementation session after review and founder prioritization.
-- **Subsequent checker of Claude implementation:** a person or separate, clean-context reviewer session with no authorship or implementation involvement in the reviewed change. Another Claude session may supply independent technical challenge, but do not misrepresent same-account GitHub approval as independent actor enforcement; a human reviewer should approve protected merges.
+- **Repository provenance:** initial commit `e2ca6ec7b20f730fab882f9fb5a2472242ea414c` is attributed to Claude and includes a Claude Code session reference, contradicting the earlier Codex-only origin claim. Neither model should be called sole author without fuller evidence. Treat individual commit and change provenance as the unit of independence.
+- **Initial baseline reviewer:** a separate Claude session supplied an R1 review summary via the founder; its code findings require exact-SHA grounding and its live/authenticated results remain unverified. Do not pretend a Claude-authored baseline has been externally certified purely because another Claude session checked it.
+- **Subsequent implementation maker:** Claude Code, in a new implementation session after founder triage.
+- **Subsequent checker of Claude implementation:** a reviewer with no authorship or implementation involvement in the specific PR, preferably an independent human with a separate GitHub account. Clean-context technical review may supplement this, but never misstate same-account approval as enforced independence.
 - **Founder:** final policy and release authority. No automatic approval or role switch based on brand or tool.
 
 Review independence is determined for each **specific change**. A session that authored a commit cannot independently check that same commit. For a reviewer who later becomes Maker, any new Maker commits need an unrelated reviewer; the earlier baseline review does not cover the new work.

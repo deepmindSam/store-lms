@@ -5,6 +5,15 @@ Status: proposed governance design for independent review. No authorization to p
 ## Why this exists
 The present code offers authentication, a private `lesson_content` table, server-side quiz grading, and learner progress. A one-bit `is_published` flag is **not** a maker/checker workflow. The goal is to prevent unchecked content and unverified functionality from becoming operationally authoritative.
 
+## Provenance and assignment of agents
+- **Original application:** built initially by Codex, per founder handover. Codex must not independently certify its own baseline.
+- **Initial independent baseline checker:** Claude in a review-only session, including independent review of this governance draft PR.
+- **Subsequent implementation maker:** Claude Code, in a separate implementation session after review and founder prioritization.
+- **Subsequent checker of Claude implementation:** a person or separate, clean-context reviewer session with no authorship or implementation involvement in the reviewed change. Another Claude session may supply independent technical challenge, but do not misrepresent same-account GitHub approval as independent actor enforcement; a human reviewer should approve protected merges.
+- **Founder:** final policy and release authority. No automatic approval or role switch based on brand or tool.
+
+Review independence is determined for each **specific change**. A session that authored a commit cannot independently check that same commit. For a reviewer who later becomes Maker, any new Maker commits need an unrelated reviewer; the earlier baseline review does not cover the new work.
+
 ## Actor boundaries
 
 | Actor | May do | Must not do |

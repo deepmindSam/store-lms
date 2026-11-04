@@ -2,6 +2,15 @@
 
 Snapshot review: 2026-11-04, GitHub `main` commit `52e014494c40f7bed4b21968c3e88364d1cc6b45`. Findings from the connected GitHub repository; deployed database/auth behavior has **not** been independently tested with account credentials.
 
+## Assigned review sequence
+1. **Claude baseline checker (read-only):** independently assess Codex-built current `main`, live-test limitations, and governance PR #4. Document PASS / FAIL / UNVERIFIED and specific acceptance tests.
+2. **Founder decision:** prioritize repairs and accept/reject the governance framework; keep PR #4 draft until approved.
+3. **Claude Maker (separate implementation session):** work on issue #5 and scoped engineering changes in a new draft PR.
+4. **Independent checker of new Claude work:** another unaffiliated reviewer/session, preferably with human account-level review. Do not reuse the same Maker session for signoff or presume that approval by the PR author's GitHub identity is valid.
+5. **Human release sign-off:** after verified tests, legal/policy approval, content versioning, and deployment evidence.
+
+The original Codex builder is not assigned as the initial independent checker.
+
 ## Confirmed baseline
 - Public repo: `deepmindSam/store-lms`; GitHub Pages deployment run `41724038307` reports `success` with the above commit.
 - PR #2 (private lessons) is merged. PR #1 (launch security) is closed without a direct merge. Judge the *effective HEAD*, not PR labels.

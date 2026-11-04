@@ -3,13 +3,13 @@
 Snapshot review: 2026-11-04, GitHub `main` commit `52e014494c40f7bed4b21968c3e88364d1cc6b45`. Findings from the connected GitHub repository; deployed database/auth behavior has **not** been independently tested with account credentials.
 
 ## Assigned review sequence
-1. **Claude baseline checker (read-only):** independently assess Codex-built current `main`, live-test limitations, and governance PR #4. Document PASS / FAIL / UNVERIFIED and specific acceptance tests.
-2. **Founder decision:** prioritize repairs and accept/reject the governance framework; keep PR #4 draft until approved.
+1. **R1 review intake:** a separate Claude session reviewed the baseline, supplied via founder summary. Initial commit is attributed to Claude, not Codex. Its live/Supabase checks remain UNVERIFIED and its full local report has not been supplied as a mounted artifact here.
+2. **Founder decision:** prioritize verified static security findings, reconcile provenance language, and accept/reject the governance framework; keep PR #4 draft until approved.
 3. **Claude Maker (separate implementation session):** work on issue #5 and scoped engineering changes in a new draft PR.
 4. **Independent checker of new Claude work:** another unaffiliated reviewer/session, preferably with human account-level review. Do not reuse the same Maker session for signoff or presume that approval by the PR author's GitHub identity is valid.
 5. **Human release sign-off:** after verified tests, legal/policy approval, content versioning, and deployment evidence.
 
-The original Codex builder is not assigned as the initial independent checker.
+Do not equate an agent model name with independence; reviewers cannot validate changes they authored. A separate Claude session provided an R1 baseline review, but this does not substitute for production security testing or independent review of future Claude Maker changes.
 
 ## Confirmed baseline
 - Public repo: `deepmindSam/store-lms`; GitHub Pages deployment run `41724038307` reports `success` with the above commit.
@@ -24,6 +24,7 @@ The original Codex builder is not assigned as the initial independent checker.
 - An authorized Notion training page has been named by the founder, but the connector previously returned page not found; content-source access and authority must be verified independently.
 
 ## Immediate high-risk gaps to resolve
+0. **Assessment integrity confirmed in static SQL:** `grade_quiz()` returns `correct_count` after each attempt and has no attempt throttling, enabling answer-key inference via repeated calls. It also lacks an explicit published/assigned assessment check, so known unpublished module slugs can be graded. Fix and adversarially test in staging before any real learner rollout.
 1. No distinct content maker/checker/publisher authorization or immutable approval record.
 2. No version-bound lesson, assessment, attempt, or completion data. Updating current content can make historical passes misleading.
 3. `grade_quiz` must be tested for restrictions on draft/unpublished, unassigned, retired, wrong-scope, stale-version, and no-content modules. The current function does not itself check `lesson_content.is_published`.
@@ -54,8 +55,8 @@ The checker should write a row for each test with requirement ID, role, setup, e
 | SEC-02 | Learner cannot read another learner's profile, attempts, or progress |
 | SEC-03 | Learner cannot change own role, store/site assignment or privileges |
 | SEC-04 | Learner cannot insert/update a forged completion or quiz result through API/RPC |
-| SEC-05 | Questions API/bundle does not expose correct answers |
-| SEC-06 | Learner cannot grade unpublished, retired, unassigned, wrong-scope or stale assessments |
+| SEC-05 | Questions API/bundle does not expose correct answers, and repeated server grading feedback cannot reveal the answer key (current `correct_count` oracle risk) |
+| SEC-06 | Learner cannot grade unpublished, retired, unassigned, wrong-scope or stale assessments (source-code gap confirmed; live exploit UNVERIFIED) |
 | SEC-07 | Learner cannot bypass prerequisites by direct URL or RPC |
 | SEC-08 | Auth/session expiry, logout, disabled account and password reset tested |
 | SEC-09 | Maker cannot approve own content; checker cannot edit approved version undetected |
